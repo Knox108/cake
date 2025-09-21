@@ -5,6 +5,11 @@
     <title>Birthday Blast!</title>
     <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js'></script>
+    <script src='https://unpkg.com/splitting/dist/splitting.min.js'></script>
+    <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin3.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+
     <style>
         /* General styles */
         * {
@@ -14,20 +19,20 @@
         :root {
             --tongue: #e55c5c;
             --pupil: #fff;
-            --icing: #fce4ec; /* Light pink icing */
-            --stroke: #333; /* Darker stroke for better contrast */
+            --icing: #fce4ec;
+            --stroke: #333;
             --primary-bg-hue: 200;
             --secondary-bg-hue: 280;
         }
 
         body {
-            --frosting: hsl(var(--frosting-hue, 330), 100%, 75%); /* Prettier frosting color */
+            --frosting: hsl(var(--frosting-hue, 330), 100%, 75%);
             --lightness: 50;
             --flame: 0;
             --glow-hue: 40;
-            --glow-saturation: 70; /* Brighter glow */
-            --glow-lightness: 50; /* Brighter glow */
-            --glow-alpha: 0.6; /* More visible glow */
+            --glow-saturation: 70;
+            --glow-lightness: 50;
+            --glow-alpha: 0.6;
             --transparency-alpha: 0;
             --glow: hsla(var(--glow-hue), calc(var(--glow-saturation) * 1%), calc(var(--glow-lightness) * 1%), var(--glow-alpha));
             --transparent: hsla(0, 0%, 0%, var(--transparency-alpha));
@@ -39,8 +44,8 @@
             min-height: 100vh;
             background: linear-gradient(135deg, hsl(var(--primary-bg-hue, 180), 60%, calc(var(--lightness, 50) * 1%)), hsl(var(--secondary-bg-hue, 240), 60%, calc(var(--lightness, 50) * 1%)));
             background-size: 200% 200%;
-            animation: backgroundShift 15s ease infinite alternate; /* Subtle background animation */
-            transition: background 0.5s ease-out; /* Smooth background transition */
+            animation: backgroundShift 15s ease infinite alternate;
+            transition: background 0.5s ease-out;
         }
 
         @keyframes backgroundShift {
@@ -64,7 +69,8 @@
         }
 
         .birthday-button:hover {
-            transform: scale(0.65); /* Slight hover effect */
+            box-shadow: 0 0 20px rgba(255, 165, 0, 0.7);
+            transition: box-shadow 0.3s ease-in-out;
         }
 
         .birthday-button__text {
@@ -77,10 +83,10 @@
             text-align: center;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem; /* Slightly larger text */
-            font-family: 'Bubblegum Sans', cursive; /* Fun font */
+            font-size: 1.8rem;
+            font-family: 'Bubblegum Sans', cursive;
             font-weight: bold;
-            color: #4a148c; /* Deeper purple for text */
+            color: #4a148c;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
             transition: text-shadow 0.3s ease-in-out;
         }
@@ -88,13 +94,12 @@
         .birthday-button__text .char {
             display: inline-block;
             color: hsl(var(--hue, 0), calc(var(--char-sat, 0) * 1%), calc(var(--char-light, 0) * 1%));
-            /* Add subtle glow effect for text when not active */
             text-shadow: 0 0 5px hsla(var(--hue, 0), 80%, 70%, var(--text-glow-alpha, 0));
             transition: text-shadow 0.5s ease-in-out;
         }
 
         .birthday-button:not(.active) .birthday-button__text .char {
-            --text-glow-alpha: 1; /* Make text glow when inactive */
+            --text-glow-alpha: 1;
             animation: pulseGlow 1.5s infinite alternate;
         }
 
@@ -107,7 +112,6 @@
             }
         }
 
-
         .birthday-button:before {
             content: '';
             position: absolute;
@@ -119,7 +123,7 @@
             left: 50%;
             transform: translate(-50%, -70%) scale(calc(var(--flame) * 3));
             z-index: 2;
-            filter: blur(20px); /* More blur for a softer glow */
+            filter: blur(20px);
             opacity: var(--flame);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
@@ -128,7 +132,7 @@
             content: '';
             height: 30px;
             width: 400px;
-            filter: blur(25px); /* More blur */
+            filter: blur(25px);
             position: absolute;
             background: radial-gradient(var(--glow), var(--transparent) 20%), radial-gradient(var(--glow), var(--transparent));
             top: 100%;
@@ -142,17 +146,17 @@
             width: 240px;
             height: 100px;
             position: relative;
-            border: none; /* No default border */
+            border: none;
             background: var(--icing);
-            border-radius: 18px; /* Slightly more rounded */
+            border-radius: 18px;
             cursor: pointer;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Soft shadow */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
             transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
-            outline: none; /* Remove outline on focus */
+            outline: none;
         }
 
         .birthday-button__button:active {
-            transform: translateY(2px); /* Click feedback */
+            transform: translateY(2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
@@ -185,7 +189,7 @@
         .cake__sprinkle {
             --sprinkle: hsl(var(--sprinkle-hue, 0), 100%, 75%);
             fill: var(--sprinkle);
-            transition: fill 0.2s ease-in-out; /* Smooth sprinkle color change */
+            transition: fill 0.2s ease-in-out;
         }
 
         .cake__frosting--start {
@@ -198,27 +202,33 @@
 
         .candle__flame {
             opacity: var(--flame, 0);
-            transition: opacity 0.1s ease-out; /* Smooth flame appearance */
+            transition: opacity 0.1s ease-out;
         }
 
         .candle__flame-outer {
-            fill: #ff914d; /* Brighter orange flame */
+            fill: #ff914d;
         }
 
         .candle__flame-inner {
-            fill: #ffd700; /* Gold inner flame */
+            fill: #ffd700;
         }
 
         .face__stroke {
             stroke: var(--stroke);
         }
 
+        /* The volume button is now completely hidden. */
+        label, [type='checkbox'] {
+            display: none;
+        }
     </style>
 </head>
 <body>
 <div class="birthday-button">
     <button class="birthday-button__button">
         <svg class="birthday-button__cake" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 76.609 47.643">
+            <title>Happy Birthday Cake</title>
+            <desc>An animated birthday cake with candles.</desc>
             <defs>
                 <g id="candle" transform="translate(-48.82 -137.74)">
                     <rect ry=".567" y="147.888" x="72.548" height="12.001" width="4.252" fill="#ececec"></rect>
@@ -238,7 +248,7 @@
                     <rect width="63.5" height="26.458" x="55.374" y="159.984" ry="3.402"></rect>
                 </clipPath>
                 <clipPath id="frosting-clip">
-                    <path d="m 58.311339,159.19367 c -1.915439,0 -3.331523,2.04311 -3.986711,3.74446 -0.778328,2.02111 -0.761971,4.73695 0.529167,6.47582 0.861406,1.16012 2.614079,1.3182 4.033715,1.5875 1.321013,0.25059 2.689143,0 4.033714,0 1.344572,0 2.689143,0 4.033715,0 1.344572,0 2.689143,0 4.033715,0 1.344571,0 2.689143,0 4.033714,0 1.344572,0 2.689143,0 4.033715,0 1.344572,0 2.689143,0 4.033715,0 1.344572,0 2.689143,0 4.033715,0 1.344573,0 2.689143,0 4.033713,0 1.34457,0 2.68915,0 4.03372,0 1.34457,0 2.68914,0 4.03371,0 1.34457,0 2.71271,0.25059 4.03372,0 1.41963,-0.2693 3.17231,-0.42738 4.03371,-1.5875 1.29114,-1.73887 1.3075,-4.45471 0.52917,-6.47582 -0.65519,-1.70135 -2.07128,-3.74446 -3.98672,-3.74446 z" style="fill:#ff0041;fill-opacity:0.53424659;fill-rule:nonzero;stroke:none;stroke-width:0.90433162;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"></path>
+                    <path d="m 58.311339,159.19367 c -1.915439,0 -3.331523,2.04311 -3.986711,3.74446 -0.778328,2.02111 -0.761971,4.73695 0.529167,6.47582 0.861406,1.16012 2.614079,1.3182 4.033715,1.5875 1.321013,0.25059 2.689143,0 4.033714,0 1.344572,0 2.689143,0 4.033715,0 1.344572,0 2.689143,0 4.033715,0 1.344571,0 2.689143,0 4.033714,0 1.344572,0 2.689143,0 4.033715,0 1.344572,0 2.689143,0 4.033715,0 1.344572,0 2.689143,0 4.033715,0 1.344571,0 2.689143,0 4.033714,0 1.344572,0 2.689143,0 4.033715,0 1.344572,0 2.689143,0 4.033715,0 1.344573,0 2.689143,0 4.033713,0 1.34457,0 2.68915,0 4.03372,0 1.34457,0 2.68914,0 4.03371,0 1.34457,0 2.71271,0.25059 4.03372,0 1.41963,-0.2693 3.17231,-0.42738 4.03371,-1.5875 1.29114,-1.73887 1.3075,-4.45471 0.52917,-6.47582 -0.65519,-1.70135 -2.07128,-3.74446 -3.98672,-3.74446 z" style="fill:#ff0041;fill-opacity:0.53424659;fill-rule:nonzero;stroke:none;stroke-width:0.90433162;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"></path>
                 </clipPath>
                 <g id="sprinkles" transform="translate(63.93)">
                     <rect class="cake__sprinkle" transform="rotate(-44.064)" ry=".567" y="167.592" x="-91.837" height="1.228" width="3.307"></rect>
@@ -257,6 +267,8 @@
                     <rect class="cake__sprinkle" transform="rotate(45)" ry=".567" y="95.647" x="162.293" height="1.228" width="3.307"></rect>
                     <rect class="cake__sprinkle" transform="rotate(45)" ry=".567" y="133.647" x="124.293" height="1.228" width="3.307"></rect>
                 </g>
+                <path id="frosting" d="M58.311 159.194c-1.915 0-3.283-.087-3.986 1.098-.392.661-.073 1.766.529 2.243 1.054.834 2.689 0 4.034 0H115.36c1.344 0 2.979.834 4.033 0 .602-.477.921-1.582.53-2.243-.703-1.185-2.072-1.098-3.987-1.098z"></path>
+                <path class="cake__frosting cake__frosting--end" d="M58.311 159.194c-1.915 0-3.354 2.034-3.986 3.744-.57 1.537-.953 4.189.529 4.888 1.454.687 2.425-2.645 4.034-2.645 1.608 0 2.425 2.645 4.033 2.645 1.608 0 2.426-2.645 4.034-2.645 1.608 0 2.426 2.645 4.034 2.645 1.608 0 2.425-2.645 4.033-2.645 1.608 0 2.426 2.645 4.034 2.645 1.608 0 2.425-2.645 4.033-2.645 1.608 0 2.436-2.83 4.034-2.645 1.936.222 2.084 4.233 4.033 4.233 1.95 0 2.098-4.01 4.034-4.233 1.598-.184 2.426 2.645 4.034 2.645 1.608 0 2.426-2.645 4.034-2.645 1.608 0 2.58 3.332 4.033 2.645 1.482-.7 1.098-3.35.53-4.888-.633-1.71-2.072-3.744-3.987-3.744z"></path>
             </defs>
             <g class="cake-decoration" transform="translate(-48.82 -138.799)">
                 <g class="cake__frosting-group" clip-path="url(#frosting-clip)">
@@ -314,9 +326,7 @@
         <span class="birthday-button__text" data-splitting="">Happy Birthday!</span>
     </button>
 </div>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js'></script>
-<script src='https://unpkg.com/splitting/dist/splitting.min.js'></script>
-<script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin3.min.js'></script>
+
 <script>
     const {
         gsap,
@@ -339,6 +349,7 @@
         HORN: new Audio('https://s3-us-west-2.amazonaws.com/s.cdpn.io/605876/horn.mp3')
     };
 
+    // The rest of the code is unchanged.
     const EYES = document.querySelector('.cake__eyes');
     const BLINK = eyes => {
         gsap.set(eyes, { scaleY: 1 });
@@ -482,7 +493,7 @@
 
     const MASTER_TL = timeline({
         onStart: () => {
-            SOUNDS.ON.play();
+            // No need to set sounds to muted or un-muted on start
             document.querySelector('.birthday-button').classList.add('active');
             to(BODY, {
                 '--primary-bg-hue': 280,
@@ -500,30 +511,35 @@
                 duration: 1,
                 ease: 'power2.inOut'
             });
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 }
+            });
         },
         paused: true
     })
-        .set('.birthday-button__cake', { display: 'block' })
-        .to('.birthday-button', {
-            onStart: () => SOUNDS.CHEER.play(),
-            scale: 1,
-            duration: 0.2
-        })
-        .to('.char', { '--char-sat': 70, '--char-light': 65, duration: 0.2 }, 0)
-        .to('.char', {
-            onStart: () => SOUNDS.HORN.play(),
-            delay: 0.75,
-            y: () => gsap.utils.random(-100, -200),
-            x: () => gsap.utils.random(-50, 50),
-            duration: () => gsap.utils.random(0.5, 1)
-        })
-        .to('.char', { opacity: 0, duration: 0.25 }, '>-0.5')
-        .add(FROSTING_TL())
-        .add(SPRINKLES_TL())
-        .add(SPIN_TL())
-        .add(SHAKE_TL())
-        .add(FLAME_TL(), 'FLAME_ON')
-        .add(LIGHTS_OUT(), 'LIGHTS_OUT');
+    .set('.birthday-button__cake', { display: 'block' })
+    .to('.birthday-button', {
+        onStart: () => SOUNDS.CHEER.play(),
+        scale: 1,
+        duration: 0.2
+    })
+    .to('.char', { '--char-sat': 70, '--char-light': 65, duration: 0.2 }, 0)
+    .to('.char', {
+        onStart: () => SOUNDS.HORN.play(),
+        delay: 0.75,
+        y: () => gsap.utils.random(-100, -200),
+        x: () => gsap.utils.random(-50, 50),
+        duration: () => gsap.utils.random(0.5, 1)
+    })
+    .to('.char', { opacity: 0, duration: 0.25 }, '>-0.5')
+    .add(FROSTING_TL())
+    .add(SPRINKLES_TL())
+    .add(SPIN_TL())
+    .add(SHAKE_TL())
+    .add(FLAME_TL(), 'FLAME_ON')
+    .add(LIGHTS_OUT(), 'LIGHTS_OUT');
 
     SOUNDS.TUNE.onended = SOUNDS.MATCH.onended = () => MASTER_TL.play();
     MASTER_TL.addPause('FLAME_ON', () => SOUNDS.MATCH.play());
@@ -531,6 +547,10 @@
 
     BTN.addEventListener('click', () => {
         BTN.setAttribute('disabled', true);
+        // On the first click, we'll enable all sounds
+        for (const sound in SOUNDS) {
+            SOUNDS[sound].muted = false;
+        }
         MASTER_TL.restart();
     });
 </script>
